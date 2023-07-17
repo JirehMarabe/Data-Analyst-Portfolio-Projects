@@ -1,0 +1,128 @@
+---
+title: "Data Viz with R"
+author: "Jireh"
+date: "2023-07-17"
+output: html_document
+---
+# Data Visualization with R Programming
+Skills used: data manipulation, data visualization, exploratory data analysis, statistical modeling, programming with R, RMarkdown and reproducible research
+
+
+
+## Using ggplot2 with 'palmerpenguins' dataset
+
+
+The 'palmerpenguins' R package contains two data objects: 'penguins_raw' and 'penguins'. For this project, we will be utilizing the data from the 'penguins' object. This dataset comprises curated data, consisting of 344 observations and 8 variables. In our analysis, we will focus on three variables: Body Mass, Flipper Length, and Species.
+
+
+First, we will set up our R environment by loading the 'ggplot2' and 'palmerpenguins' packages:
+
+```{r warning=FALSE}
+library(ggplot2)
+library(palmerpenguins)
+```
+
+
+We will proceed with ggplot() function to create a scatter plot for data concerning Palmer Penguins.
+
+Distributions, relationships between variables, and clustering can be visually explored between species for the two structural size measurements in 'penguins'.
+
+```{r warning=FALSE}
+ggplot(data=penguins)+
+  geom_jitter(mapping=aes(x=flipper_length_mm, y=body_mass_g))
+```
+
+From the previous visualization, we were able to observe a *correlation between the penguins' flipper length and body mass*. In the next visualization, we will analyze the *differences in size measurements among various species of penguins*.
+
+In the upcoming code segment, we will assign a reusable function to the variable 'p'. This allows us to efficiently reuse the function multiple times in the future without the need for excessive copying and pasting. Additionally, we will incorporate other elements to enhance the visual experience.
+
+```{r warning=FALSE}
+p <- ggplot(data=penguins)+
+  geom_point(mapping=aes(x=flipper_length_mm, y=body_mass_g, color=species))
+
+p + labs(title = "Palmer Penguins: Body Mass vs. Flipper Length", subtitle= "Sample of Three Penguin Species", caption="Data Collected by Dr. Gorman")+ 
+annotate("text", x=220, y= 4000, label="The Gentoos are the largest!", fontface="italic", size=4.5, angle=40)
+```
+
+The analysis of size measurements among various species of penguins reveals an interesting insight: *gentoos emerge as the largest species*. This finding indicates that within the studied penguin population, gentoos possess larger physical dimensions compared to other species. *Understanding these variations in size can provide valuable insights into penguin biology, ecological roles, and potential adaptations to their respective habitats*. Further investigation into the factors influencing these size differences may uncover additional connections between morphology, behavior, and the environment, contributing to a deeper understanding of penguin species diversity and evolution.
+
+Next, we will use the facet_grid() function to create multiple small charts to demonstrate the *difference between sexes*.
+
+```{r warning=FALSE}
+p + facet_grid(~sex)
+```
+
+The analysis revealed *a consistent pattern across species, indicating that males tend to be larger than females*. This finding suggests that sexual dimorphism in size is present among the studied species, highlighting the *importance of considering gender differences in future research or conservation efforts*.
+
+
+## Exploring other techniques in R using various datasets
+
+
+### diamonds dataset
+
+In the following code, we utilize the geom_bar function to create a bar plot from the 'diamonds' dataset, which consists of 53,940 observations and 7 variables. This visualization offers valuable insights into the categorical data. We will focus on three variables: Cut, Color, and the total Count of diamonds falling under the other two variables.
+
+```{r}
+ggplot(data=diamonds)+
+  geom_bar(mapping=aes(x=color, fill=cut))+
+  facet_wrap(~cut)
+```
+
+The previous generated bar charts display the different amount of diamonds that fall under varying categories of Cut and Color. 
+The 'Color' variable in the dataset represents a color range from D, which indicates 'Colorless', to J, which represents a 'Yellow' hue. 
+
+The 'Cut' variable in the 'diamonds' dataset represents the quality of the diamond's cut. It utilizes a range from 'Fair' to 'Ideal'. The 'Fair' cut indicates a lower quality cut, while 'Ideal' represents the highest quality cut available. 
+
+From this panel of bar charts, we are able to observe that *a huge number of diamonds fall under a 'Cut' that is 'Ideal' and in the middle of the 'Color' range, between 'Colorless' and 'Yellow'*.
+
+An example of an insight that we could find here is that the combination of an 'Ideal' cut and diamonds in the intermediate color range can be used to define a specific market segment. This segment may have its own pricing dynamics, as *customers might be willing to pay a premium for diamonds with superior cut quality while accepting a slightly lower price point due to the presence of some color*. 
+
+We could *verify this by way of pricing experiments*, in which we could randomly assign different price points to subsets of the sample, ensuring a range that includes both a premium price and a slightly lower price point. We can then collect customer data and use this to identify patterns and correlations between the pricing points, customer preferences, and purchase decisions. Look for indications of willingness to pay a premium for superior cut quality while considering the impact of the presence of some color
+
+### hotel_bookings dataset
+
+In this part of the project, we will explore the 'hotel_bookings' dataset and find out if we could discover significant insights. We will proceed to utilize the 'glimpse()' function to perform efficient data manipulation; we begin by loading the 'dplyr' package using the following code chunk:
+
+```{r message=FALSE}
+library(dplyr)
+```
+
+
+In the upcoming code snippet, we will read the 'hotel_bookings.csv' file and gain an overview of its column names and data by using the 'glimpse()' function.
+
+```{r}
+getwd()
+setwd("~/rProjects")
+getwd()
+
+hotel_bookings <- read.csv("hotel_bookings.csv")
+glimpse(hotel_bookings)
+```
+
+
+Now, we are able to see the columns and we decide to find out which market segments have the most hotel bookings. 
+
+In order to facilitate easier and more convenient access to specific columns, we will assign relevant columns from the 'hotel_bookings' dataset to separate variables in the forthcoming code chunk.
+
+```{r}
+mindate <- min(hotel_bookings$arrival_date_year)
+maxdate <- max(hotel_bookings$arrival_date_year)
+```
+
+
+In the following code chunk, we employ the 'geom_bar()' function to create a bar chart that allows us to compare market segments by hotel type in the context of hotel bookings.
+
+```{r}
+ggplot(data=hotel_bookings)+
+  geom_bar(mapping=aes(x=market_segment))+
+  facet_wrap(~hotel)+
+  theme(axis.text.x=element_text(angle=45))+
+  labs(title = "Comparison of market segments by hotel type for hotel bookings",
+       caption=paste0("From ", mindate, " to ", maxdate),
+       x="Market Segment",
+       y="Number of Bookings")
+```
+
+Here, we are able to observe that a *huge number of hotel bookings from the Online Travel Agency market segment*. 
+
+The high number of bookings from the Online Travel Agency segment suggests that partnering or focusing marketing efforts on these agencies can be beneficial for hotels. They play a crucial role in driving bookings and *should be prioritized in expansion and marketing strategies*.
